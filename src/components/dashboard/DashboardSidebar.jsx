@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const NAV = [
   { icon: "📊", label: "Overview",         href: "/dashboard"           },
@@ -13,6 +14,15 @@ const NAV = [
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
+  const router   = useRouter();
+  const { user, logout } = useAuth();
+
+  function handleLogout() {
+    logout();
+    router.push("/login");
+  }
+
+  const initials = user?.name?.trim().split(" ").slice(0,2).map(w => w[0]?.toUpperCase()).join("") ?? "AK";
 
   return (
     <aside className="w-[240px] shrink-0 min-h-screen bg-[#0F172A] flex flex-col sticky top-0 z-40">
@@ -29,10 +39,10 @@ export default function DashboardSidebar() {
       {/* ── Agent Profile ───────────────────────── */}
       <div className="flex items-center gap-3 px-5 py-5 border-b border-white/[0.06]">
         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1E3A5F] to-[#0F6E56] flex items-center justify-center text-sm font-extrabold text-white shrink-0 select-none">
-          AK
+          {initials}
         </div>
         <div className="min-w-0">
-          <p className="text-white text-sm font-bold truncate">Ahmed Khan</p>
+          <p className="text-white text-sm font-bold truncate">{user?.name ?? "Agent"}</p>
           <span className="inline-block bg-[#F59E0B]/15 border border-[#F59E0B]/30 text-[#F59E0B] text-[10px] font-bold px-2 py-[1px] rounded-full mt-[2px]">
             Agent
           </span>
@@ -67,7 +77,7 @@ export default function DashboardSidebar() {
 
       {/* ── Logout ──────────────────────────────── */}
       <div className="px-3 pb-6">
-        <button className="w-full flex items-center gap-3 px-3 py-[10px] rounded-xl text-sm font-medium text-[#64748B] hover:bg-white/[0.05] hover:text-red-400 transition-all duration-150">
+        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-[10px] rounded-xl text-sm font-medium text-[#64748B] hover:bg-white/[0.05] hover:text-red-400 transition-all duration-150">
           <span className="text-base w-5 text-center">🚪</span>
           Logout
         </button>

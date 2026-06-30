@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 /* ── Constants ─────────────────────────────────────────── */
 const FEATURES = [
@@ -63,6 +64,7 @@ function Field({ label, id, error, children }) {
 
 /* ── Main component ────────────────────────────────────── */
 export default function RegisterPage() {
+  const router = useRouter();
   const [role, setRole]     = useState("buyer");
   const [showPw, setShowPw]   = useState(false);
   const [showCpw, setShowCpw] = useState(false);

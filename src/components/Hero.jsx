@@ -1,6 +1,21 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 export default function Hero() {
+  const router = useRouter();
+  const [location, setLocation] = useState("");
+  const [type,     setType]     = useState("");
+  const [purpose,  setPurpose]  = useState("");
+
+  function handleSearch() {
+    const params = new URLSearchParams();
+    if (location) params.set("city",     location);
+    if (type && type !== "All Types")         params.set("category", type.toLowerCase());
+    if (purpose && purpose !== "Buy or Rent") params.set("purpose",  purpose.toLowerCase());
+    router.push(`/properties${params.toString() ? `?${params}` : ""}`);
+  }
   return (
     <section
       className="relative px-8 pt-[72px] pb-20 text-center overflow-hidden"
@@ -42,6 +57,9 @@ export default function Hero() {
             </label>
             <input
               type="text"
+              value={location}
+              onChange={e => setLocation(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && handleSearch()}
               placeholder="Karachi, Lahore, Islamabad..."
               className="border-none outline-none text-sm text-[#1E293B] bg-transparent font-sans"
             />
@@ -54,7 +72,7 @@ export default function Hero() {
             <label className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-[0.5px] mb-[2px]">
               Type
             </label>
-            <select className="border-none outline-none text-sm text-[#1E293B] bg-transparent font-sans">
+            <select value={type} onChange={e => setType(e.target.value)} className="border-none outline-none text-sm text-[#1E293B] bg-transparent font-sans">
               <option>All Types</option>
               <option>House</option>
               <option>Apartment</option>
@@ -71,7 +89,7 @@ export default function Hero() {
             <label className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-[0.5px] mb-[2px]">
               Purpose
             </label>
-            <select className="border-none outline-none text-sm text-[#1E293B] bg-transparent font-sans">
+            <select value={purpose} onChange={e => setPurpose(e.target.value)} className="border-none outline-none text-sm text-[#1E293B] bg-transparent font-sans">
               <option>Buy or Rent</option>
               <option>Buy</option>
               <option>Rent</option>
@@ -79,7 +97,7 @@ export default function Hero() {
           </div>
 
           {/* Search Button */}
-          <button className="bg-[#F59E0B] border-none rounded-[10px] px-6 text-[#0F172A] font-bold text-sm cursor-pointer whitespace-nowrap">
+          <button onClick={handleSearch} className="bg-[#F59E0B] border-none rounded-[10px] px-6 text-[#0F172A] font-bold text-sm cursor-pointer whitespace-nowrap">
             🔍 Search
           </button>
         </div>

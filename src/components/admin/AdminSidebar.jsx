@@ -1,18 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const NAV = [
-  { icon: "📊", label: "Overview",           href: "/admin"                  },
-  { icon: "👥", label: "Manage Users",        href: "/admin/users"            },
-  { icon: "🏠", label: "Manage Properties",   href: "/admin/properties"       },
-  { icon: "🏷️", label: "Categories",          href: "/admin/categories"       },
-  { icon: "⚙️", label: "Settings",            href: "/admin/settings"         },
+  { icon: "📊", label: "Overview",           href: "/admin"             },
+  { icon: "👥", label: "Manage Users",        href: "/admin/users"       },
+  { icon: "🏠", label: "Manage Properties",   href: "/admin/properties"  },
 ];
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router   = useRouter();
+  const { logout } = useAuth();
+
+  function handleLogout() {
+    logout();
+    router.push("/login");
+  }
 
   return (
     <aside className="w-[240px] shrink-0 min-h-screen bg-[#0F172A] flex flex-col sticky top-0 z-40">
@@ -58,7 +64,7 @@ export default function AdminSidebar() {
 
       {/* Logout */}
       <div className="px-3 pb-6">
-        <button className="w-full flex items-center gap-3 px-3 py-[10px] rounded-xl text-sm font-medium text-[#64748B] hover:bg-white/[0.05] hover:text-red-400 transition-all duration-150">
+        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-[10px] rounded-xl text-sm font-medium text-[#64748B] hover:bg-white/[0.05] hover:text-red-400 transition-all duration-150">
           <span className="text-base w-5 text-center">🚪</span>
           Logout
         </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function AgentSidebar() {
   const [form, setForm] = useState({
@@ -28,12 +29,16 @@ export default function AgentSidebar() {
       <div className="bg-white border border-[#E2E8F0] rounded-2xl p-5">
         {/* Agent info */}
         <div className="flex items-center gap-4 mb-5">
-          {/* Avatar */}
-          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#1E3A5F] to-[#0F6E56] flex items-center justify-center text-2xl shrink-0 font-bold text-white select-none">
-            AK
-          </div>
+          {/* Avatar — clickable */}
+          <Link href="/agents/1" className="shrink-0">
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#1E3A5F] to-[#0F6E56] flex items-center justify-center text-2xl font-bold text-white select-none hover:opacity-90 transition-opacity">
+              AK
+            </div>
+          </Link>
           <div>
-            <p className="font-bold text-[#0F172A] text-base leading-tight">Ahmed Khan</p>
+            <Link href="/agents/1" className="hover:text-[#F59E0B] transition-colors">
+              <p className="font-bold text-[#0F172A] text-base leading-tight">Ahmed Khan</p>
+            </Link>
             <p className="text-xs text-[#64748B] mt-[2px]">DHA Properties</p>
             <div className="flex items-center gap-1 mt-1">
               {[1, 2, 3, 4, 5].map((s) => (
@@ -43,6 +48,14 @@ export default function AgentSidebar() {
             </div>
           </div>
         </div>
+
+        {/* View Profile link */}
+        <Link
+          href="/agents/1"
+          className="flex items-center justify-center gap-2 w-full border border-[#E2E8F0] text-[#475569] text-xs font-semibold py-2 rounded-xl hover:border-[#F59E0B] hover:text-[#0F172A] transition-colors mb-4"
+        >
+          👤 View Full Profile
+        </Link>
 
         {/* Contact info */}
         <div className="flex flex-col gap-2 mb-5 text-sm text-[#475569]">

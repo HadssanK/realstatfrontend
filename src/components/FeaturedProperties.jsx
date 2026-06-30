@@ -61,7 +61,7 @@ export default function FeaturedProperties() {
             Featured Properties
           </div>
         </div>
-        <a href="#" className="text-sm text-[#F59E0B] font-semibold cursor-pointer no-underline">
+        <a href="/properties" className="text-sm text-[#F59E0B] font-semibold cursor-pointer no-underline hover:text-[#D97706] transition-colors">
           View all →
         </a>
       </div>

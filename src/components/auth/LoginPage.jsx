@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const FEATURES = [
   { icon: "🏠", text: "Post Properties instantly" },
@@ -14,6 +16,8 @@ export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { login } = useAuth();
+  const router = useRouter();
 
   function handleChange(e) {
     setError("");
@@ -27,8 +31,13 @@ export default function LoginPage() {
       return;
     }
     setLoading(true);
-    // Simulate async login
-    setTimeout(() => setLoading(false), 1800);
+    // Simulate login — replace with real API call
+    setTimeout(() => {
+      const role = form.email.includes("admin") ? "admin" : "agent";
+      login({ name: "Ahmed Khan", email: form.email, role, token: "demo-token-123" });
+      router.replace(role === "admin" ? "/admin" : "/dashboard");
+      setLoading(false);
+    }, 1200);
   }
 
   return (

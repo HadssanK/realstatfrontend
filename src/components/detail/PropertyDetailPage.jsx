@@ -23,9 +23,9 @@ export default function PropertyDetailPage() {
         <nav className="flex items-center gap-2 text-xs text-[#94A3B8] mb-5 flex-wrap">
           <a href="/" className="hover:text-[#F59E0B] transition-colors">Home</a>
           <span>›</span>
-          <a href="/properties" className="hover:text-[#F59E0B] transition-colors">Karachi</a>
+          <a href="/properties?city=karachi" className="hover:text-[#F59E0B] transition-colors">Karachi</a>
           <span>›</span>
-          <a href="/properties" className="hover:text-[#F59E0B] transition-colors">DHA</a>
+          <a href="/properties?city=karachi&area=dha" className="hover:text-[#F59E0B] transition-colors">DHA</a>
           <span>›</span>
           <span className="text-[#475569] font-medium truncate max-w-[200px]">
             Modern 5-Bed House in DHA Phase 6
