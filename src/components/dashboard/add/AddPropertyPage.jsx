@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import FormSection from "@/components/dashboard/add/FormSection";
 import FieldLabel from "@/components/dashboard/add/FieldLabel";
 import ImageUploader from "@/components/dashboard/add/ImageUploader";
@@ -92,37 +91,10 @@ export default function AddPropertyPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
-      {mobileNavOpen && (
-        <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setMobileNavOpen(false)} />
-      )}
-      <div className={`fixed lg:sticky top-0 left-0 h-screen z-40 transition-transform duration-300
-        ${mobileNavOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
-        <DashboardSidebar />
-      </div>
+    <div className="flex flex-col min-w-0">
 
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* ── Top bar ── */}
-        <header className="sticky top-0 z-20 bg-white border-b border-[#E2E8F0] px-6 py-4 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <button onClick={() => setMobileNavOpen(true)}
-              className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg bg-[#F1F5F9] text-[#475569]">☰</button>
-            <div>
-              <h1 className="text-lg font-extrabold text-[#0F172A]">Add New Property</h1>
-              <p className="text-xs text-[#94A3B8] hidden sm:block">Fill in the details to publish your listing</p>
-            </div>
-          </div>
-          <div className="hidden md:flex items-center gap-2">
-            {["Basic Info","Details","Location","Images"].map((s,i) => (
-              <span key={s} className="text-[11px] font-semibold px-3 py-1 rounded-full bg-[#F1F5F9] text-[#64748B]">
-                {i+1}. {s}
-              </span>
-            ))}
-          </div>
-        </header>
-
-        {/* Toast */}
-        {(submitted || savedDraft) && (
+      {/* Toast */}
+      {(submitted || savedDraft) && (
           <div className={`mx-6 mt-4 flex items-center gap-3 px-5 py-3 rounded-xl text-sm font-semibold
             ${submitted ? "bg-emerald-50 border border-emerald-200 text-emerald-700"
                         : "bg-blue-50 border border-blue-200 text-blue-700"}`}>
@@ -424,6 +396,6 @@ export default function AddPropertyPage() {
 
         </div>{/* end 2-col */}
       </div>
-    </div>
+    
   );
 }

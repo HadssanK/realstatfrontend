@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import Pagination from "@/components/listing/Pagination";
 
 /* ── Sample data ──────────────────────────────────────────── */
@@ -88,7 +87,7 @@ function InquiryCard({ inq, onMarkRead, onMarkResponded }) {
   const isLong = inq.message.length > SHORT_LEN;
 
   return (
-    <div className={`rounded-2xl border transition-all duration-200 overflow-hidden
+    <div className={`rounded-2xl border transition-all duration-200 overflow-hidden 
       ${isUnread ? "border-[#F59E0B]/30 bg-[#FFFBEB]/60" : "border-[#E2E8F0] bg-white"}`}>
 
       <div className="p-5">
@@ -177,13 +176,11 @@ function InquiryCard({ inq, onMarkRead, onMarkResponded }) {
 
 /* ── Main Page ────────────────────────────────────────────── */
 export default function AgentInquiriesPage() {
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [activeTab,     setActiveTab]     = useState("all");
-  const [search,        setSearch]        = useState("");
-  const [currentPage,   setCurrentPage]   = useState(1);
-  const [inquiries,     setInquiries]     = useState(SAMPLE);
+  const [activeTab,   setActiveTab]   = useState("all");
+  const [search,      setSearch]      = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [inquiries,   setInquiries]   = useState(SAMPLE);
 
-  /* Badge counts */
   const counts = useMemo(() => ({
     all:       inquiries.length,
     unread:    inquiries.filter(i => i.status === "unread").length,
@@ -191,11 +188,10 @@ export default function AgentInquiriesPage() {
     responded: inquiries.filter(i => i.status === "responded").length,
   }), [inquiries]);
 
-  /* Filter + search */
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
     return inquiries.filter(i => {
-      const tabOk = activeTab === "all" || i.status === activeTab;
+      const tabOk    = activeTab === "all" || i.status === activeTab;
       const searchOk = !q || i.name.toLowerCase().includes(q) || i.property.toLowerCase().includes(q) || i.email.toLowerCase().includes(q);
       return tabOk && searchOk;
     });
@@ -206,129 +202,78 @@ export default function AgentInquiriesPage() {
 
   function handleTabChange(tab) { setActiveTab(tab); setCurrentPage(1); }
   function handleSearch(val)    { setSearch(val);    setCurrentPage(1); }
-
-  function markRead(id) {
-    setInquiries(prev => prev.map(i => i.id === id ? { ...i, status: "read" } : i));
-  }
-  function markResponded(id) {
-    setInquiries(prev => prev.map(i => i.id === id ? { ...i, status: "responded" } : i));
-  }
+  function markRead(id)        { setInquiries(prev => prev.map(i => i.id === id ? { ...i, status: "read" } : i)); }
+  function markResponded(id)   { setInquiries(prev => prev.map(i => i.id === id ? { ...i, status: "responded" } : i)); }
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
-      {mobileNavOpen && (
-        <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setMobileNavOpen(false)} />
-      )}
-      <div className={`fixed lg:sticky top-0 left-0 h-screen z-40 transition-transform duration-300
-        ${mobileNavOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
-        <DashboardSidebar />
+    <div className="flex flex-col gap-5 max-w-full">
+
+      {/* Heading row */}
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <h2 className="text-xl font-extrabold text-[#0F172A]">All Inquiries</h2>
+          <p className="text-xs text-[#94A3B8] mt-[2px]">
+            {filtered.length} {filtered.length === 1 ? "inquiry" : "inquiries"} found
+          </p>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          {counts.unread > 0 && (
+            <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+              {counts.unread} unread
+            </span>
+          )}
+          <div className="relative w-full sm:w-[280px]">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] pointer-events-none text-sm">&#128269;</span>
+            <input type="text" value={search} onChange={e => handleSearch(e.target.value)}
+              placeholder="Search by buyer or property..."
+              className="w-full border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-[9px] text-sm text-[#1E293B] outline-none focus:border-[#F59E0B] focus:ring-2 focus:ring-[#F59E0B]/20 transition-all placeholder:text-[#CBD5E1] bg-white" />
+            {search && (
+              <button onClick={() => handleSearch("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#475569] text-sm">x</button>
+            )}
+          </div>
+        </div>
       </div>
 
-      <div className="flex-1 flex flex-col min-w-0">
-
-        {/* ── Top bar ── */}
-        <header className="sticky top-0 z-20 bg-white border-b border-[#E2E8F0] px-6 py-4 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <button onClick={() => setMobileNavOpen(true)}
-              className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg bg-[#F1F5F9] text-[#475569]">☰</button>
-            <div>
-              <h1 className="text-lg font-extrabold text-[#0F172A]">My Inquiries</h1>
-              <p className="text-xs text-[#94A3B8] hidden sm:block">Manage and respond to buyer messages</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            {counts.unread > 0 && (
-              <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                {counts.unread} unread
+      {/* Filter tabs */}
+      <div className="flex items-center gap-1 bg-white border border-[#E2E8F0] rounded-xl p-1 w-fit flex-wrap">
+        {TABS.map(tab => (
+          <button key={tab} onClick={() => handleTabChange(tab)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150 capitalize
+              ${activeTab === tab ? "bg-[#F59E0B] text-[#0F172A]" : "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#0F172A]"}`}>
+            {tab}
+            {counts[tab] > 0 && (
+              <span className={`text-[10px] font-bold px-[7px] py-[1px] rounded-full
+                ${activeTab === tab ? "bg-[#0F172A]/20 text-[#0F172A]" : tab === "unread" ? "bg-red-100 text-red-600" : "bg-[#F1F5F9] text-[#475569]"}`}>
+                {counts[tab]}
               </span>
             )}
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#1E3A5F] to-[#0F6E56] flex items-center justify-center text-xs font-extrabold text-white select-none">
-              AK
-            </div>
-          </div>
-        </header>
-
-        <main className="flex-1 px-6 py-6 max-w-[900px] w-full mx-auto flex flex-col gap-5">
-
-          {/* ── Heading row ── */}
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div>
-              <h2 className="text-xl font-extrabold text-[#0F172A]">All Inquiries</h2>
-              <p className="text-xs text-[#94A3B8] mt-[2px]">
-                {filtered.length} {filtered.length === 1 ? "inquiry" : "inquiries"} found
-              </p>
-            </div>
-            {/* Search */}
-            <div className="relative w-full sm:w-[280px]">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8] pointer-events-none text-sm">🔍</span>
-              <input
-                type="text" value={search}
-                onChange={e => handleSearch(e.target.value)}
-                placeholder="Search by buyer or property..."
-                className="w-full border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-[9px] text-sm text-[#1E293B] outline-none focus:border-[#F59E0B] focus:ring-2 focus:ring-[#F59E0B]/20 transition-all placeholder:text-[#CBD5E1] bg-white"
-              />
-              {search && (
-                <button onClick={() => handleSearch("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#475569] text-sm">✕</button>
-              )}
-            </div>
-          </div>
-
-          {/* ── Filter tabs ── */}
-          <div className="flex items-center gap-1 bg-white border border-[#E2E8F0] rounded-xl p-1 w-fit flex-wrap">
-            {TABS.map(tab => (
-              <button key={tab} onClick={() => handleTabChange(tab)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150 capitalize
-                  ${activeTab === tab
-                    ? "bg-[#F59E0B] text-[#0F172A]"
-                    : "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#0F172A]"}`}>
-                {tab}
-                {counts[tab] > 0 && (
-                  <span className={`text-[10px] font-bold px-[7px] py-[1px] rounded-full
-                    ${activeTab === tab
-                      ? "bg-[#0F172A]/20 text-[#0F172A]"
-                      : tab === "unread"
-                        ? "bg-red-100 text-red-600"
-                        : "bg-[#F1F5F9] text-[#475569]"}`}>
-                    {counts[tab]}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* ── Inquiry list ── */}
-          {paginated.length > 0 ? (
-            <div className="flex flex-col gap-4">
-              {paginated.map(inq => (
-                <InquiryCard
-                  key={inq.id} inq={inq}
-                  onMarkRead={markRead}
-                  onMarkResponded={markResponded}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-2xl border border-[#E2E8F0]">
-              <span className="text-5xl mb-4">💬</span>
-              <p className="font-bold text-[#0F172A] text-base mb-1">No inquiries found</p>
-              <p className="text-sm text-[#64748B]">
-                {search ? "Try a different search term" : "No inquiries in this category yet"}
-              </p>
-            </div>
-          )}
-
-          {/* ── Pagination ── */}
-          {totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={p => { setCurrentPage(p); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-            />
-          )}
-
-        </main>
+          </button>
+        ))}
       </div>
+
+      {/* Inquiry list */}
+      {paginated.length > 0 ? (
+        <div className="flex flex-col gap-4">
+          {paginated.map(inq => (
+            <InquiryCard key={inq.id} inq={inq} onMarkRead={markRead} onMarkResponded={markResponded} />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-2xl border border-[#E2E8F0]">
+          <span className="text-5xl mb-4">&#128172;</span>
+          <p className="font-bold text-[#0F172A] text-base mb-1">No inquiries found</p>
+          <p className="text-sm text-[#64748B]">
+            {search ? "Try a different search term" : "No inquiries in this category yet"}
+          </p>
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <Pagination currentPage={currentPage} totalPages={totalPages}
+          onPageChange={p => { setCurrentPage(p); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
+      )}
     </div>
   );
 }
